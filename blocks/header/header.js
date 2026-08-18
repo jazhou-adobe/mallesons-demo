@@ -146,7 +146,7 @@ export default async function decorate(block) {
     ? [...navSections.querySelectorAll(':scope .default-content-wrapper > ul > li')] : [];
 
   topLevelItems.forEach((li, idx) => {
-    const link = li.querySelector(':scope > a');
+    const link = li.querySelector(':scope > a, :scope > p > a');
     const submenu = li.querySelector(':scope > ul');
     const isPrimary = PRIMARY_LABELS.includes(link.textContent.trim());
 
