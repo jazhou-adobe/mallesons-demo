@@ -13,15 +13,20 @@
 :root {
   /* colors */
   --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  --light-color: #f6f4ee;
+  --dark-color: #6b6478;
+  --text-color: #1a1a1a;
+  --link-color: #1b1028;
+  --link-hover-color: #6f60d4;
+
+  /* brand */
+  --mallesons-navy: #1b1028;
+  --mallesons-accent: #6f60d4;
+  --mallesons-cream: #f6f4ee;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --body-font-family: roboto, roboto-fallback, arial, sans-serif;
+  --heading-font-family: denton, georgia, 'Times New Roman', serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -40,13 +45,7 @@
   --nav-height: 64px;
 }
 
-/* fallback fonts */
-@font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
-}
-
+/* fallback font for roboto (body copy) */
 @font-face {
   font-family: roboto-fallback;
   size-adjust: 99.529%;
