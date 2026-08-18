@@ -25,3 +25,23 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
+
+.cards .cards-card-body h3 {
+  margin: 0 0 8px;
+  font-size: var(--heading-font-size-xs);
+}
+
+.cards .cards-card-body p:first-child {
+  margin: 0 0 8px;
+  color: var(--mallesons-accent);
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cards .cards-card-body p:last-child:not(:has(a)) {
+  margin-top: 12px;
+  color: var(--dark-color);
+  font-size: var(--body-font-size-xs);
+}

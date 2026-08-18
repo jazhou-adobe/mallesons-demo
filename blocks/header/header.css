@@ -1,6 +1,7 @@
 /* header and nav layout */
 header .nav-wrapper {
-  background-color: var(--background-color);
+  background-color: var(--mallesons-navy);
+  color: var(--background-color);
   width: 100%;
   z-index: 2;
   position: fixed;
@@ -72,7 +73,7 @@ header nav .nav-hamburger button {
   border: 0;
   border-radius: 0;
   padding: 0;
-  background-color: var(--background-color);
+  background-color: transparent;
   color: inherit;
   overflow: initial;
   text-overflow: initial;
@@ -149,7 +150,7 @@ header .nav-brand {
 }
 
 header nav .nav-brand img {
-  width: 128px;
+  width: 140px;
   height: auto;
 }
 
@@ -242,11 +243,19 @@ header nav .nav-sections ul > li > ul > li {
     display: block;
     position: absolute;
     left: -24px;
-    width: 200px;
+    width: 240px;
     top: 150%;
-    padding: 16px;
-    background-color: var(--light-color);
+    padding: 24px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    box-shadow: 0 12px 24px rgb(27 16 40 / 15%);
     white-space: initial;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li:has(ul h3)[aria-expanded='true'] > ul {
+    width: 560px;
+    column-count: 2;
+    column-gap: 32px;
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
@@ -258,15 +267,29 @@ header nav .nav-sections ul > li > ul > li {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid var(--light-color);
+    border-bottom: 8px solid var(--background-color);
   }
 
   header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
     padding: 8px 0;
+    break-inside: avoid;
+  }
+
+  header nav .nav-sections .default-content-wrapper > ul > li > ul > li h3 {
+    margin: 0.4em 0;
+    color: var(--mallesons-accent);
+    font-family: var(--body-font-family);
+    font-size: var(--body-font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    break-after: avoid;
   }
 }
 
 /* tools */
 header nav .nav-tools {
   grid-area: tools;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 0.04em;
 }

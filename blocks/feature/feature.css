@@ -1,0 +1,53 @@
+.feature > div {
+  display: grid;
+  gap: 24px;
+  align-items: center;
+}
+
+.feature-image {
+  order: 2;
+  line-height: 0;
+}
+
+.feature-image img {
+  width: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.feature-body {
+  order: 1;
+}
+
+.feature-body p:first-child {
+  margin: 0 0 8px;
+  color: var(--mallesons-accent);
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.feature-body h2 {
+  margin-top: 0;
+  font-family: var(--heading-font-family);
+}
+
+.feature-body p:last-child a::after {
+  content: ' \2192';
+}
+
+@media (width >= 900px) {
+  .feature > div {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+  }
+
+  .feature-image {
+    order: 2;
+  }
+
+  .feature-body {
+    order: 1;
+  }
+}

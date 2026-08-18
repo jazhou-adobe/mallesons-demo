@@ -18,3 +18,50 @@ footer .footer p {
     padding: 40px 32px 24px;
   }
 }
+
+footer .footer > div > div > div:first-child > div {
+  display: grid;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+footer .footer h3 {
+  margin: 0 0 12px;
+  color: var(--mallesons-accent);
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+footer .footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+footer .footer li {
+  margin-bottom: 8px;
+}
+
+footer .footer .default-content-wrapper p {
+  margin-bottom: 16px;
+  color: var(--dark-color);
+}
+
+footer .footer .default-content-wrapper p:first-child {
+  color: var(--text-color);
+}
+
+@media (width >= 600px) {
+  footer .footer > div > div > div:first-child > div {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width >= 900px) {
+  footer .footer > div > div > div:first-child > div {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
