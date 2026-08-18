@@ -20,10 +20,14 @@ footer .footer p {
   }
 }
 
-footer .footer > div > div > div:first-child > div {
+footer .footer .columns.footer-links {
+  margin-bottom: 48px;
+}
+
+footer .footer .columns.footer-links > div {
   display: grid;
   gap: 32px;
-  margin-bottom: 48px;
+  align-items: start;
 }
 
 footer .footer h3 {
@@ -51,13 +55,13 @@ footer .footer li a {
 }
 
 @media (width >= 600px) {
-  footer .footer > div > div > div:first-child > div {
+  footer .footer .columns.footer-links > div {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (width >= 900px) {
-  footer .footer > div > div > div:first-child > div {
+  footer .footer .columns.footer-links > div {
     grid-template-columns: repeat(4, 1fr);
   }
 }
