@@ -302,6 +302,10 @@ main > .section:first-of-type {
   margin-top: 0;
 }
 
+main > .section > div:first-child > :first-child {
+  margin-top: 0;
+}
+
 @media (width >= 900px) {
   main > .section > div {
     padding: 0 32px;

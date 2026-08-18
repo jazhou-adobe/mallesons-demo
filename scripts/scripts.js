@@ -10,6 +10,8 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  readBlockConfig,
+  toClassName,
 } from './aem.js';
 
 if (window.trustedTypes && window.trustedTypes.createPolicy) {
@@ -104,6 +106,22 @@ function buildAutoBlocks(main) {
 }
 
 /**
+ * Applies a `section-metadata` block's `Style` key as classes on the
+ * enclosing section, then removes the metadata block from the DOM.
+ * @param {Element} main The container element
+ */
+function decorateSectionMetadata(main) {
+  main.querySelectorAll('.section-metadata').forEach((block) => {
+    const section = block.closest('.section');
+    const config = readBlockConfig(block);
+    if (section && config.style) {
+      config.style.split(',').forEach((style) => section.classList.add(toClassName(style.trim())));
+    }
+    block.closest('.section > div')?.remove();
+  });
+}
+
+/**
  * Decorates formatted links to style them as buttons.
  * @param {HTMLElement} main The main container element
  */
@@ -151,6 +169,7 @@ export function decorateMain(main) {
   decorateIcons(main);
   buildAutoBlocks(main);
   decorateSections(main);
+  decorateSectionMetadata(main);
   decorateBlocks(main);
   decorateButtons(main);
 }

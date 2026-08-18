@@ -32,6 +32,16 @@
   min-height: 340px;
 }
 
+@media (width >= 900px) {
+  .promo-item {
+    min-height: 446px;
+  }
+
+  .promo.promo-feature .promo-item {
+    min-height: 446px;
+  }
+}
+
 .promo-item::before {
   content: '';
   position: absolute;
