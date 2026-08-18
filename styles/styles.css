@@ -25,8 +25,8 @@
   --mallesons-cream: #f6f4ee;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, arial, sans-serif;
-  --heading-font-family: denton, georgia, 'Times New Roman', serif;
+  --body-font-family: 'haas grotesk display web', arial, helvetica, sans-serif;
+  --heading-font-family: denton, georgia, 'times new roman', serif;
 
   /* body sizes */
   --body-font-size-m: 22px;
@@ -43,13 +43,6 @@
 
   /* nav height */
   --nav-height: 64px;
-}
-
-/* fallback font for roboto (body copy) */
-@font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
-  src: local('Arial');
 }
 
 @media (width >= 900px) {
