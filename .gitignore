@@ -8,6 +8,8 @@ helix-importer-ui
 *.bak
 .idea
 import-work/
+deploy/
+scripts-deploy/
 
 # Ensure these files are tracked
 !CLAUDE.md
