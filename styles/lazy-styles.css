@@ -1,1 +1,19 @@
 /* add global styles that can be loaded post LCP here */
+
+/* standalone section call-to-action links, e.g. "Explore Publications" */
+.default-content-wrapper > p:not(.button-wrapper):has(> a:only-child:not(.button)) {
+  text-align: center;
+}
+
+.default-content-wrapper > p:not(.button-wrapper) > a:only-child:not(.button) {
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 1px;
+}
+
+/* serif section headings follow source's light, tracked Denton treatment */
+main .section:not(.cards-container) .default-content-wrapper h2 {
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}

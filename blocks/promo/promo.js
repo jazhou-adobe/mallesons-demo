@@ -2,8 +2,9 @@ import { createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
  * loads and decorates the promo block
- * a single item renders as a full-width feature banner;
- * two or more items render as an even grid of image-backed tiles
+ * each item renders as a full-width band split 50/50 between a solid-colour
+ * text panel and an image; a single item is a feature banner, while two or
+ * more items stack as alternating (zig-zag) bands
  * @param {Element} block The promo block element
  */
 export default function decorate(block) {

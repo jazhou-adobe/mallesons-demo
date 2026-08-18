@@ -8,12 +8,11 @@
 }
 
 .cards > ul > li {
-  border: 1px solid #dadada;
   background-color: var(--background-color);
 }
 
 .cards .cards-card-body {
-  margin: 16px;
+  margin: 16px 0 0;
 }
 
 .cards .cards-card-image {
@@ -32,20 +31,26 @@
 
 .cards .cards-card-body h3 {
   margin: 0 0 8px;
-  font-size: var(--heading-font-size-xs);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 1px;
 }
 
 .cards .cards-card-body p:first-child {
   margin: 0 0 8px;
-  color: var(--mallesons-accent);
+  color: var(--text-color);
   font-weight: 700;
-  font-size: var(--body-font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  letter-spacing: 0.5px;
 }
 
 .cards .cards-card-body p:nth-last-child(2) {
   display: -webkit-box;
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  letter-spacing: 0.5px;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
@@ -53,6 +58,77 @@
 
 .cards .cards-card-body p:last-child:not(:has(a)) {
   margin-top: 12px;
-  color: var(--dark-color);
+  color: var(--text-color);
   font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 1px;
+}
+
+/* per-card CTA (e.g. "Discover Now") + its trailing arrow-in-circle icon */
+.cards .cards-card-body p:last-child:has(a) {
+  margin-top: 12px;
+}
+
+.cards .cards-card-body p:last-child > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 1px;
+}
+
+.cards .cards-card-body .icon-arrow-circle {
+  width: 22px;
+  height: 22px;
+}
+
+/* trending variant: slightly smaller title, tracked body */
+.cards.trending .cards-card-body h3 {
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.cards.trending .cards-card-body p:nth-last-child(2) {
+  font-size: var(--body-font-size-xs);
+  line-height: 1.6;
+  letter-spacing: 1px;
+}
+
+/* section intro — every "cards" variant (trending/publications/thinking/
+   news) shares this small bold centered label instead of a full heading */
+.cards-container h2 {
+  max-width: 900px;
+  margin: 0 auto 32px;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+@media (width >= 900px) {
+  .cards-container h2 {
+    margin-bottom: 48px;
+  }
+
+  /* trending: vertical dividers between the 3 columns instead of gaps,
+     matching the source's editorial rail layout */
+  .cards.trending > ul {
+    gap: 0;
+  }
+
+  .cards.trending > ul > li {
+    padding: 0 32px;
+  }
+
+  .cards.trending > ul > li:first-child {
+    padding-left: 0;
+  }
+
+  .cards.trending > ul > li:not(:first-child) {
+    border-left: 1px solid #d8d2c4;
+  }
 }

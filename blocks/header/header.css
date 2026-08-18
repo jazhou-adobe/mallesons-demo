@@ -11,6 +11,12 @@ header .nav-wrapper {
   position: fixed;
 }
 
+/* source tracks all nav/label text at 1px letter-spacing site-wide */
+header nav,
+header .nav-overlay {
+  letter-spacing: 1px;
+}
+
 header nav {
   box-sizing: border-box;
   display: grid;
@@ -199,6 +205,9 @@ header .nav-overlay-rail a {
   padding: 14px 32px;
   font: inherit;
   font-size: var(--body-font-size-s);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 1px;
   color: inherit;
   text-align: left;
   cursor: pointer;
@@ -236,6 +245,9 @@ header .nav-panel-heading {
 
 header .nav-panel-heading h2 {
   margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.1;
 }
 
 header .nav-panel-cta {
@@ -243,12 +255,9 @@ header .nav-panel-cta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-radius: 2em;
-  padding: 0.7em 1.4em;
-  background-color: var(--mallesons-accent);
-  color: var(--background-color);
+  color: var(--mallesons-accent);
   font-weight: 600;
-  font-size: var(--body-font-size-xs);
+  font-size: var(--body-font-size-s);
   text-decoration: none;
 }
 
@@ -264,12 +273,10 @@ header .nav-panel-list {
 
 header .nav-panel-group h3 {
   margin: 0 0 16px;
-  color: var(--mallesons-accent);
+  color: var(--text-color);
   font-family: var(--body-font-family);
-  font-size: var(--body-font-size-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: var(--body-font-size-s);
+  font-weight: 600;
 }
 
 header .nav-panel-group ul {
@@ -290,6 +297,8 @@ header .nav-panel-group li {
 
 header .nav-panel-group a {
   color: var(--text-color);
+  font-size: var(--body-font-size-s);
+  line-height: 1.2;
 }
 
 header .nav-panel-cards {
