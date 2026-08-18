@@ -1,64 +1,116 @@
 .feature > div {
   display: grid;
-  gap: 24px;
-  align-items: center;
+  gap: 20px;
+}
+
+/* centred eyebrow above the two columns */
+.feature-eyebrow {
+  order: 1;
+  margin: 0;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  letter-spacing: 1px;
+  text-align: center;
 }
 
 .feature-image {
-  order: 2;
-  line-height: 0;
-  max-width: 220px;
+  order: 3;
   margin: 0 auto;
+  max-width: 260px;
+  line-height: 0;
 }
 
 .feature-image img {
   width: 100%;
   aspect-ratio: 3 / 4;
-  border-radius: 4px;
   object-fit: cover;
+  object-position: top;
 }
 
 .feature-body {
-  order: 1;
-}
-
-.feature-body p:first-child {
-  margin: 0 0 8px;
-  color: var(--mallesons-accent);
-  font-weight: 700;
-  font-size: var(--body-font-size-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  order: 2;
 }
 
 .feature-body h2 {
   margin-top: 0;
   font-family: var(--heading-font-family);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 .feature-body p:nth-last-child(2) {
   display: -webkit-box;
+  color: var(--dark-color);
+  line-height: 1.6;
+  letter-spacing: 1px;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
 
+.feature-body p:last-child {
+  margin-top: 24px;
+}
+
+/* call to action: bare text link followed by a circular arrow */
+.feature-body p:last-child a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 1px;
+  text-decoration: none;
+}
+
 .feature-body p:last-child a::after {
-  content: ' \2192';
+  content: '\2192';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  font-size: 0.85em;
+}
+
+.feature-body p:last-child a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+  opacity: 0.75;
 }
 
 @media (width >= 900px) {
   .feature > div {
-    grid-template-columns: 1fr 220px;
-    gap: 48px;
+    grid-template-columns: 1fr 280px;
+    grid-template-areas:
+      'eyebrow eyebrow'
+      'body    image';
+    column-gap: 64px;
+    align-items: end;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--text-color);
   }
 
-  .feature-image {
-    order: 2;
-    max-width: none;
+  .feature-eyebrow {
+    grid-area: eyebrow;
+    margin-bottom: 24px;
   }
 
   .feature-body {
-    order: 1;
+    grid-area: body;
+    align-self: center;
+  }
+
+  .feature-image {
+    grid-area: image;
+    align-self: end;
+    max-width: none;
+    margin: 0;
   }
 }

@@ -1,8 +1,9 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
 /**
- * loads and decorates the feature block: an image beside an eyebrow,
- * heading, copy and a call to action.
+ * loads and decorates the feature block: a centred eyebrow above a two-column
+ * layout of copy (eyebrow-less heading, body and call to action) beside a tall
+ * portrait image.
  * @param {Element} block The feature block element
  */
 export default function decorate(block) {
@@ -14,6 +15,13 @@ export default function decorate(block) {
         div.className = 'feature-body';
       }
     });
+    // promote the leading paragraph to a full-width, centred eyebrow
+    const body = row.querySelector('.feature-body');
+    const eyebrow = body?.querySelector('p:first-child');
+    if (eyebrow && body.children.length > 1) {
+      eyebrow.className = 'feature-eyebrow';
+      row.prepend(eyebrow);
+    }
   });
   block.querySelectorAll('picture > img').forEach((img) => {
     img.closest('picture').replaceWith(createOptimizedPicture(img.src, img.alt, false, [{ width: '600' }]));

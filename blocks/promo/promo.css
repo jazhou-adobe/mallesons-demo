@@ -6,116 +6,143 @@
 .promo {
   display: grid;
   gap: 2px;
-}
-
-.promo.promo-grid {
   grid-template-columns: 1fr;
 }
 
-@media (width >= 600px) {
-  .promo.promo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
+/* each item is a full-width band, split into a text panel and an image */
 .promo-item {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  min-height: 280px;
+  display: grid;
+  grid-template-columns: 1fr;
   overflow: hidden;
+  background-color: var(--mallesons-navy);
   color: var(--background-color);
 }
 
-.promo.promo-feature .promo-item {
-  align-items: center;
-  min-height: 340px;
-}
-
-@media (width >= 900px) {
-  .promo-item {
-    min-height: 446px;
-  }
-
-  .promo.promo-feature .promo-item {
-    min-height: 446px;
-  }
-}
-
-.promo-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: linear-gradient(0deg, rgb(27 16 40 / 85%) 0%, rgb(27 16 40 / 15%) 60%);
-}
-
-.promo.promo-feature .promo-item::before {
-  background: linear-gradient(90deg, rgb(27 16 40 / 90%) 0%, rgb(27 16 40 / 40%) 65%, rgb(27 16 40 / 10%) 100%);
-}
-
 .promo-item-image {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+  order: 1;
+  position: relative;
+  min-height: 240px;
   line-height: 0;
 }
 
 .promo-item-image img {
+  position: absolute;
+  inset: 0;
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
 .promo-item-body {
-  position: relative;
-  z-index: 2;
-  padding: 24px;
-}
-
-.promo.promo-feature .promo-item-body {
-  max-width: 480px;
-  padding: 40px;
+  order: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 24px;
+  background-color: var(--mallesons-navy);
 }
 
 .promo-item-body h3 {
-  margin: 0 0 8px;
-  font-size: var(--heading-font-size-s);
+  margin: 0 0 12px;
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 .promo-item-body h3 a {
   color: currentcolor;
 }
 
+.promo-item-body h3 a:hover {
+  color: currentcolor;
+  text-decoration: none;
+}
+
 .promo-item-body p {
-  margin: 0 0 16px;
+  margin: 0 0 12px;
   font-size: var(--body-font-size-xs);
+  line-height: 1.5;
+  letter-spacing: 1px;
 }
 
 .promo-item-body p:last-child {
-  margin-bottom: 0;
+  margin: 20px 0 0;
 }
 
+/* call to action: bare text link followed by a circular arrow */
 .promo-item-body p:last-child a {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  border: 1px solid var(--background-color);
-  border-radius: 2em;
-  padding: 0.6em 1.4em;
-  color: var(--background-color);
-  font-weight: 500;
+  gap: 12px;
+  color: currentcolor;
+  font-size: var(--body-font-size-xs);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 1px;
   text-decoration: none;
+}
+
+.promo-item-body p:last-child a::after {
+  content: '\2192';
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7em;
+  height: 1.7em;
+  border: 1px solid currentcolor;
+  border-radius: 50%;
+  font-size: 0.85em;
+  text-transform: none;
 }
 
 .promo-item-body p:last-child a:hover {
-  background-color: var(--background-color);
-  color: var(--mallesons-navy);
+  color: currentcolor;
   text-decoration: none;
+  opacity: 0.75;
 }
 
 @media (width >= 900px) {
+  /* split the band into two equal halves */
+  .promo-item {
+    grid-template-columns: 1fr 1fr;
+    min-height: 446px;
+  }
+
+  /* feature (single item) and even grid rows: text left, image right */
+  .promo-item-body {
+    order: 1;
+    padding: 56px 64px;
+  }
+
+  .promo-item-image {
+    order: 2;
+    min-height: 0;
+  }
+
   .promo.promo-feature .promo-item-body {
-    padding: 56px;
+    max-width: 640px;
+  }
+
+  .promo-item-body h3 {
+    font-size: var(--heading-font-size-xl);
+  }
+
+  .promo-item-body p {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* grid (multi item) zig-zags: odd rows flip to image left, text right */
+  .promo-grid .promo-item:nth-child(odd) .promo-item-body {
+    order: 2;
+  }
+
+  .promo-grid .promo-item:nth-child(odd) .promo-item-image {
+    order: 1;
   }
 }
