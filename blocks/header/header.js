@@ -189,7 +189,7 @@ export default async function decorate(block) {
   nav.setAttribute('aria-expanded', 'false');
 
   // search icon in the tools area opens the overlay focused on search
-  nav.querySelector('.nav-tools .icon-search')?.closest('p')?.addEventListener('click', () => {
+  nav.querySelector('.nav-tools .icon-search-white')?.closest('p')?.addEventListener('click', () => {
     toggleOverlay(nav, overlay, true);
   });
 

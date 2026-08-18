@@ -5,8 +5,9 @@
 
 .hero {
   position: relative;
+  box-sizing: border-box;
   padding: 64px 24px 96px;
-  min-height: 420px;
+  min-height: 100svh;
   display: flex;
   align-items: flex-end;
 }
@@ -46,6 +47,8 @@
 
 @media (width >= 900px) {
   .hero {
-    padding: 40px 32px;
+    min-height: 0;
+    aspect-ratio: 2.54 / 1;
+    padding: 40px 32px 56px;
   }
 }

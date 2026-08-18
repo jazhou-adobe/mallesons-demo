@@ -22,8 +22,12 @@
 
 .cards > ul > li img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   object-fit: cover;
+}
+
+.cards.trending > ul > li img {
+  aspect-ratio: 16 / 9;
 }
 
 .cards .cards-card-body h3 {
@@ -38,6 +42,13 @@
   font-size: var(--body-font-size-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.cards .cards-card-body p:nth-last-child(2) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
 }
 
 .cards .cards-card-body p:last-child:not(:has(a)) {

@@ -7,10 +7,13 @@
 .feature-image {
   order: 2;
   line-height: 0;
+  max-width: 220px;
+  margin: 0 auto;
 }
 
 .feature-image img {
   width: 100%;
+  aspect-ratio: 3 / 4;
   border-radius: 4px;
   object-fit: cover;
 }
@@ -33,18 +36,26 @@
   font-family: var(--heading-font-family);
 }
 
+.feature-body p:nth-last-child(2) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
 .feature-body p:last-child a::after {
   content: ' \2192';
 }
 
 @media (width >= 900px) {
   .feature > div {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 220px;
     gap: 48px;
   }
 
   .feature-image {
     order: 2;
+    max-width: none;
   }
 
   .feature-body {

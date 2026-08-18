@@ -1,5 +1,6 @@
 footer {
-  background-color: var(--light-color);
+  background-color: var(--mallesons-navy);
+  color: var(--background-color);
   font-size: var(--body-font-size-xs);
 }
 
@@ -15,19 +16,19 @@ footer .footer p {
 
 @media (width >= 900px) {
   footer .footer > div {
-    padding: 40px 32px 24px;
+    padding: 56px 32px 32px;
   }
 }
 
 footer .footer > div > div > div:first-child > div {
   display: grid;
   gap: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 48px;
 }
 
 footer .footer h3 {
-  margin: 0 0 12px;
-  color: var(--mallesons-accent);
+  margin: 0 0 16px;
+  color: var(--background-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-xs);
   font-weight: 700;
@@ -42,16 +43,11 @@ footer .footer ul {
 }
 
 footer .footer li {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-footer .footer .default-content-wrapper p {
-  margin-bottom: 16px;
-  color: var(--dark-color);
-}
-
-footer .footer .default-content-wrapper p:first-child {
-  color: var(--text-color);
+footer .footer li a {
+  color: rgb(255 255 255 / 80%);
 }
 
 @media (width >= 600px) {
@@ -63,5 +59,66 @@ footer .footer .default-content-wrapper p:first-child {
 @media (width >= 900px) {
   footer .footer > div > div > div:first-child > div {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* logo / social / copyright / legal row */
+footer .footer .default-content-wrapper {
+  display: grid;
+  gap: 16px 24px;
+  grid-template-areas: 'logo' 'social' 'copyright' 'legal';
+  padding-top: 32px;
+  border-top: 1px solid rgb(255 255 255 / 15%);
+}
+
+footer .footer .default-content-wrapper p:nth-child(1) {
+  grid-area: logo;
+}
+
+footer .footer .default-content-wrapper p:nth-child(2) {
+  grid-area: social;
+  display: flex;
+  gap: 16px;
+}
+
+footer .footer .default-content-wrapper p:nth-child(3) {
+  grid-area: copyright;
+  color: rgb(255 255 255 / 60%);
+}
+
+footer .footer .default-content-wrapper p:nth-child(4) {
+  grid-area: legal;
+  color: rgb(255 255 255 / 60%);
+}
+
+footer .footer .default-content-wrapper p:nth-child(4) a {
+  color: rgb(255 255 255 / 60%);
+}
+
+footer .footer .default-content-wrapper p:nth-child(1) img {
+  width: 160px;
+  height: auto;
+}
+
+footer .footer .default-content-wrapper .icon {
+  width: 28px;
+  height: 28px;
+  color: var(--background-color);
+}
+
+@media (width >= 900px) {
+  footer .footer .default-content-wrapper {
+    grid-template-columns: auto 1fr;
+    grid-template-areas: 'logo social' 'copyright legal';
+    align-items: center;
+  }
+
+  footer .footer .default-content-wrapper p:nth-child(2) {
+    justify-self: end;
+  }
+
+  footer .footer .default-content-wrapper p:nth-child(4) {
+    justify-self: end;
+    text-align: right;
   }
 }
