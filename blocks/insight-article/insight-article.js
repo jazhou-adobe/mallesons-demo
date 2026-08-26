@@ -1,10 +1,13 @@
 /*
  * Insight Article Block
  * Renders a Mallesons "Latest Thinking" insight from a Content Fragment.
- * The block is authored with a single Content Fragment path, e.g.
+ * The block is authored with a Content Fragment path in its first row, e.g.
  *   /content/dam/aem-demo-assets/mallesons/test-insight
- * which is used to build a persisted GraphQL query URL. The returned payload
- * drives the full article layout (hero, byline, intro, body, taxonomy, authors).
+ * and, optionally, a Content Fragment variation name in a second row, e.g.
+ *   singapore
+ * These build a persisted GraphQL query URL (…;insightPath=…[;variation=…]).
+ * The returned payload drives the full article layout (hero, byline, intro,
+ * body, taxonomy, authors).
  */
 
 const GRAPHQL_ENDPOINT = 'https://publish-p116706-e1142141.adobeaemcloud.com/graphql/execute.json/aem-demo-assets/insight-by-path';
@@ -12,10 +15,13 @@ const GRAPHQL_ENDPOINT = 'https://publish-p116706-e1142141.adobeaemcloud.com/gra
 /**
  * Builds the persisted GraphQL query URL for an insight.
  * @param {string} insightPath Content Fragment path
+ * @param {string} [variation] optional Content Fragment variation name
  * @returns {string} fully qualified endpoint URL
  */
-function endpointFor(insightPath) {
-  return `${GRAPHQL_ENDPOINT};insightPath=${insightPath}`;
+function endpointFor(insightPath, variation) {
+  let url = `${GRAPHQL_ENDPOINT};insightPath=${insightPath}`;
+  if (variation) url += `;variation=${variation}`;
+  return url;
 }
 
 /**
@@ -255,14 +261,16 @@ function render(block, item) {
  * @param {HTMLElement} block
  */
 export default async function decorate(block) {
-  const insightPath = (block.textContent || '').trim();
+  const rows = [...block.children];
+  const insightPath = (rows[0] ? rows[0].textContent : '').trim();
+  const variation = (rows[1] ? rows[1].textContent : '').trim();
   block.textContent = '';
   if (!insightPath) return;
 
   block.classList.add('insight-article-loading');
   let item;
   try {
-    const resp = await fetch(endpointFor(insightPath));
+    const resp = await fetch(endpointFor(insightPath, variation));
     if (!resp.ok) throw new Error(`request failed with status ${resp.status}`);
     const payload = await resp.json();
     item = payload && payload.data && payload.data.insightByPath && payload.data.insightByPath.item;
