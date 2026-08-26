@@ -197,7 +197,12 @@ function buildCategories(item) {
   const section = el('section', 'insight-article-categories');
   section.append(el('h2', null, 'Categories'));
   const list = el('ul', 'insight-article-tags');
-  values.forEach((value) => list.append(el('li', null, value)));
+  values.forEach((value) => {
+    const label = el('span', 'insight-article-tag-label', value);
+    const arrow = el('span', 'insight-article-tag-arrow', '\u2192');
+    arrow.setAttribute('aria-hidden', 'true');
+    list.append(el('li', 'insight-article-tag', label, arrow));
+  });
   section.append(list);
   return section;
 }

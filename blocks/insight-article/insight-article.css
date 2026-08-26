@@ -194,7 +194,10 @@
 }
 
 .insight-article-categories h2 {
-  margin: 0 0 20px;
+  display: inline-block;
+  margin: 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--mallesons-navy);
   font-family: var(--heading-font-family);
   font-weight: 400;
   font-size: var(--heading-font-size-m);
@@ -202,19 +205,29 @@
 }
 
 .insight-article-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px 40px;
+  margin: 40px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.insight-article-tags li {
-  padding: 8px 18px;
-  border: 1px solid rgb(27 16 40 / 25%);
-  border-radius: 999px;
-  font-size: var(--body-font-size-xs);
+.insight-article-tag {
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  color: var(--mallesons-navy);
+}
+
+.insight-article-tag-label {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.insight-article-tag-arrow {
+  margin-left: 12px;
+  color: var(--mallesons-navy);
+  white-space: nowrap;
 }
 
 /* authors band */
@@ -286,6 +299,10 @@
 
   .insight-article-hero h1 {
     font-size: var(--heading-font-size-xxl);
+  }
+
+  .insight-article-tags {
+    grid-template-columns: 1fr 1fr;
   }
 
   .insight-article-author-grid {
