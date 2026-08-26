@@ -36,17 +36,24 @@ function el(tag, className, ...children) {
 }
 
 /**
- * Decodes a Content Fragment rich-text field. The GraphQL payload wraps the
- * (once entity-escaped) authored markup in an outer `<p>`, so reading the
- * text content of the parsed wrapper yields the real markup string.
+ * Returns the rich-text markup for a Content Fragment field. Fragments arrive
+ * in one of two shapes:
+ *  - already real HTML (e.g. `<p>…</p><ul><li>…`), used as-is; or
+ *  - double-encoded, where the real markup is entity-escaped (`&lt;p&gt;…`)
+ *    inside an outer element, so the decoded text content IS the real HTML.
+ * We only unwrap the extra layer when escaped tags are actually present,
+ * otherwise unwrapping would discard the genuine markup and leave plain text.
  * @param {string} payloadHtml
- * @returns {string} decoded HTML markup
+ * @returns {string} rich-text HTML markup
  */
 function decodeRichText(payloadHtml) {
   if (!payloadHtml) return '';
   const tmp = document.createElement('div');
-  tmp.innerHTML = payloadHtml;
-  return tmp.textContent.trim();
+  tmp.innerHTML = payloadHtml.trim();
+  if (/&lt;\/?[a-z]/i.test(payloadHtml)) {
+    return tmp.textContent.trim();
+  }
+  return tmp.innerHTML.trim();
 }
 
 /**
