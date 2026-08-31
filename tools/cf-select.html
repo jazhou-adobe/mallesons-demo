@@ -34,13 +34,14 @@
         // Reuse the IMS token from the DA host (da.live is already signed in and
         // allow-listed for IMS). Running the selector's own auth flow here would
         // hit IMS from the aem.page origin, which is not allow-listed → CORS.
-        // The plugin only works when launched from the DA Library (it needs the
+        // The plugin only works when launched from the DA Library (needs the
         // host token); guard against being opened directly.
         const timeout = new Promise((_, rej) => { setTimeout(() => rej(new Error('timeout')), 6000); });
         let sdk;
         try {
           sdk = await Promise.race([DA_SDK, timeout]);
         } catch {
+          sdk = null;
           fail('Open this from the Library panel inside the DA editor.');
         }
 
@@ -50,13 +51,17 @@
             orgId: ORG_ID,
             repoId: REPO_ID,
             env: 'PROD',
-            noWrap: true,
+            // Keep the dialog wrapper (do NOT set noWrap) so the Select / Cancel
+            // action buttons are shown — noWrap renders only the inventory table.
             isOpen: true,
             selectionType: 'single',
+            dialogSize: 'fullscreen',
+            onDismiss: () => sdk.actions.closeLibrary(),
             onSubmit: ({ contentFragments }) => {
               const path = contentFragments && contentFragments[0] && contentFragments[0].path;
               if (!path) return;
-              // A DA block is a table whose first row is the block name.
+              // A DA block is a table whose first row is the block name; the
+              // second cell shows the selected Content Fragment path.
               sdk.actions.sendHTML(
                 `<table><tr><td>${BLOCK_NAME}</td></tr><tr><td>${path}</td></tr></table>`,
               );
