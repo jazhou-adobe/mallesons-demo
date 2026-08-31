@@ -20,45 +20,52 @@
       // DA authoring instance for this project.
       const REPO_ID = 'author-p116706-e1142141.adobeaemcloud.com';
       const ORG_ID = '716E61785DF4006C0A495ED2@AdobeOrg';
-      const IMS_CLIENT_ID = 'darkalley';
       // Block inserted on selection. Switch to 'insight-article-metadata' if the
       // body is authored in the page rather than driven from the fragment.
       const BLOCK_NAME = 'insight-article';
 
       const container = document.getElementById('cf');
+      const fail = (msg) => { container.innerHTML = `<p class="cf-msg">${msg}</p>`; };
 
-      try {
-        const { actions } = await DA_SDK;
-        const selectors = window.PureJSContentFragmentSelectors;
-        if (!selectors) throw new Error('Content Fragment Selector MFE failed to load.');
+      const selectors = window.PureJSContentFragmentSelectors;
+      if (!selectors) {
+        fail('Content Fragment Selector failed to load. Check network access to experience.adobe.com.');
+      } else {
+        // Reuse the IMS token from the DA host (da.live is already signed in and
+        // allow-listed for IMS). Running the selector's own auth flow here would
+        // hit IMS from the aem.page origin, which is not allow-listed → CORS.
+        // The plugin only works when launched from the DA Library (it needs the
+        // host token); guard against being opened directly.
+        const timeout = new Promise((_, rej) => { setTimeout(() => rej(new Error('timeout')), 6000); });
+        let sdk;
+        try {
+          sdk = await Promise.race([DA_SDK, timeout]);
+        } catch {
+          fail('Open this from the Library panel inside the DA editor.');
+        }
 
-        selectors.registerContentFragmentSelectorAuthService({
-          imsClientId: IMS_CLIENT_ID,
-          imsScope: 'AdobeID,openid,read_organizations,additional_info.projectedProductContext',
-          redirectUri: window.location.href,
-          env: 'PROD',
-        });
-
-        selectors.renderContentFragmentSelectorWithAuthFlow(container, {
-          orgId: ORG_ID,
-          repoId: REPO_ID,
-          env: 'PROD',
-          selectionType: 'single',
-          filters: { folder: '/content/dam' },
-          onSubmit: ({ contentFragments }) => {
-            const path = contentFragments && contentFragments[0] && contentFragments[0].path;
-            if (!path) return;
-            // A DA block is a table whose first row is the block name.
-            actions.sendHTML(
-              `<table><tr><td>${BLOCK_NAME}</td></tr><tr><td>${path}</td></tr></table>`,
-            );
-            actions.closeLibrary();
-          },
-        });
-      } catch (error) {
-        container.innerHTML = `<p class="cf-msg">Unable to open the Content Fragment Selector: ${error.message}</p>`;
-        // eslint-disable-next-line no-console
-        console.error('cf-select plugin:', error);
+        if (sdk && sdk.token) {
+          selectors.renderContentFragmentSelector(container, {
+            imsToken: sdk.token,
+            orgId: ORG_ID,
+            repoId: REPO_ID,
+            env: 'PROD',
+            noWrap: true,
+            isOpen: true,
+            selectionType: 'single',
+            onSubmit: ({ contentFragments }) => {
+              const path = contentFragments && contentFragments[0] && contentFragments[0].path;
+              if (!path) return;
+              // A DA block is a table whose first row is the block name.
+              sdk.actions.sendHTML(
+                `<table><tr><td>${BLOCK_NAME}</td></tr><tr><td>${path}</td></tr></table>`,
+              );
+              sdk.actions.closeLibrary();
+            },
+          });
+        } else if (sdk) {
+          fail('No IMS token available from the DA host. Sign in to DA and reopen.');
+        }
       }
     </script>
   </body>
