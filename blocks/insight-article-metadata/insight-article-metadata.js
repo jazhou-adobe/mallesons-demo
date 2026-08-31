@@ -130,22 +130,6 @@ function richTextBlock(className, payloadHtml) {
 }
 
 /**
- * Moves the authored body (every block row after the first) into a styled
- * wrapper, preserving the EDS-decorated markup (paragraphs, headings, lists).
- * @param {HTMLElement[]} rows block child rows
- * @returns {HTMLElement|null} the body wrapper, or null when nothing authored
- */
-function extractAuthoredBody(rows) {
-  const wrapper = el('div', 'insight-article-metadata-content');
-  rows.slice(1).forEach((row) => {
-    [...row.children].forEach((cell) => {
-      while (cell.firstChild) wrapper.append(cell.firstChild);
-    });
-  });
-  return wrapper.childNodes.length ? wrapper : null;
-}
-
-/**
  * Builds the full-bleed navy hero (kicker, title, published date).
  * @param {object} item
  * @returns {HTMLElement}
@@ -255,12 +239,12 @@ function buildAuthors(item) {
 }
 
 /**
- * Renders the full article, using the authored body in place of the CF body.
+ * Renders the CF-driven header chrome (hero, breadcrumb, byline, intro) into
+ * the block, in place at the top of the page.
  * @param {HTMLElement} block
  * @param {object} item Content Fragment payload
- * @param {HTMLElement|null} authoredBody body harvested from the DA page
  */
-function render(block, item, authoredBody) {
+function renderHeader(block, item) {
   block.textContent = '';
   document.title = item.browserTitle || item.title || document.title;
 
@@ -270,16 +254,27 @@ function render(block, item, authoredBody) {
   body.append(buildBreadcrumb(item), buildByline(item));
   const intro = richTextBlock('insight-article-metadata-intro', item.introText && item.introText.html);
   if (intro) body.append(intro);
-  if (authoredBody) {
-    stripAuthoredStyles(authoredBody);
-    body.append(authoredBody);
-  }
-  const categories = buildCategories(item);
-  if (categories) body.append(categories);
   block.append(body);
+}
 
+/**
+ * Renders the CF-driven footer chrome (Categories, "Meet The Authors") after
+ * the authored body by appending it to the end of the page's <main>. The body
+ * itself lives in the page as ordinary sections/blocks between header and
+ * footer, so it is never owned by this block.
+ * @param {HTMLElement} block
+ * @param {object} item Content Fragment payload
+ */
+function renderFooter(block, item) {
+  const main = block.closest('main');
+  if (!main) return;
+  const categories = buildCategories(item);
+  if (categories) {
+    const column = el('div', 'insight-article-metadata-body', categories);
+    main.append(column);
+  }
   const authors = buildAuthors(item);
-  if (authors) block.append(authors);
+  if (authors) main.append(authors);
 }
 
 /**
@@ -287,11 +282,9 @@ function render(block, item, authoredBody) {
  * @param {HTMLElement} block
  */
 export default async function decorate(block) {
-  const rows = [...block.children];
-  const configCells = rows[0] ? [...rows[0].children] : [];
+  const configCells = block.firstElementChild ? [...block.firstElementChild.children] : [];
   const insightPath = (configCells[0] ? configCells[0].textContent : '').trim();
   const variation = (configCells[1] ? configCells[1].textContent : '').trim();
-  const authoredBody = extractAuthoredBody(rows);
   block.textContent = '';
   if (!insightPath) return;
 
@@ -312,5 +305,6 @@ export default async function decorate(block) {
     block.append(el('p', 'insight-article-metadata-error', 'This insight is currently unavailable.'));
     return;
   }
-  render(block, item, authoredBody);
+  renderHeader(block, item);
+  renderFooter(block, item);
 }
