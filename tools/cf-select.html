@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Select Content Fragment</title>
+    <style>
+      html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+      #cf { height: 100vh; }
+      .cf-msg { padding: 24px; color: #333; }
+    </style>
+    <!-- AEM Content Fragment Selector MFE (UMD) exposes window.PureJSContentFragmentSelectors -->
+    <script src="https://experience.adobe.com/solutions/CQ-sites-content-fragment-selector/static-assets/resources/content-fragment-selector.js"></script>
+  </head>
+  <body>
+    <div id="cf"><p class="cf-msg">Loading Content Fragment Selector…</p></div>
+    <script type="module">
+      import DA_SDK from 'https://da.live/nx/utils/sdk.js';
+
+      // DA authoring instance for this project.
+      const REPO_ID = 'author-p116706-e1142141.adobeaemcloud.com';
+      const ORG_ID = '716E61785DF4006C0A495ED2@AdobeOrg';
+      const IMS_CLIENT_ID = 'darkalley';
+      // Block inserted on selection. Switch to 'insight-article-metadata' if the
+      // body is authored in the page rather than driven from the fragment.
+      const BLOCK_NAME = 'insight-article';
+
+      const container = document.getElementById('cf');
+
+      try {
+        const { actions } = await DA_SDK;
+        const selectors = window.PureJSContentFragmentSelectors;
+        if (!selectors) throw new Error('Content Fragment Selector MFE failed to load.');
+
+        selectors.registerContentFragmentSelectorAuthService({
+          imsClientId: IMS_CLIENT_ID,
+          imsScope: 'AdobeID,openid,read_organizations,additional_info.projectedProductContext',
+          redirectUri: window.location.href,
+          env: 'PROD',
+        });
+
+        selectors.renderContentFragmentSelectorWithAuthFlow(container, {
+          orgId: ORG_ID,
+          repoId: REPO_ID,
+          env: 'PROD',
+          selectionType: 'single',
+          filters: { folder: '/content/dam' },
+          onSubmit: ({ contentFragments }) => {
+            const path = contentFragments && contentFragments[0] && contentFragments[0].path;
+            if (!path) return;
+            // A DA block is a table whose first row is the block name.
+            actions.sendHTML(
+              `<table><tr><td>${BLOCK_NAME}</td></tr><tr><td>${path}</td></tr></table>`,
+            );
+            actions.closeLibrary();
+          },
+        });
+      } catch (error) {
+        container.innerHTML = `<p class="cf-msg">Unable to open the Content Fragment Selector: ${error.message}</p>`;
+        // eslint-disable-next-line no-console
+        console.error('cf-select plugin:', error);
+      }
+    </script>
+  </body>
+</html>
