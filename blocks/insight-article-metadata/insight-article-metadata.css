@@ -67,6 +67,16 @@
   padding: 0 24px;
 }
 
+/*
+ * Match the authored body (the page sections that follow the block) to the
+ * article reading column, overriding the site default of 1200px. Scoped to the
+ * sibling sections of this block only, so other pages are unaffected.
+ */
+.insight-article-metadata-container ~ .section > div {
+  max-width: 820px;
+  padding: 0 24px;
+}
+
 /* breadcrumb */
 .insight-article-metadata-breadcrumb {
   display: flex;
