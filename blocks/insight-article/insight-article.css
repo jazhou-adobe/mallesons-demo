@@ -186,6 +186,60 @@
   cursor: pointer;
 }
 
+/* body tables */
+.insight-article-content table {
+  width: 100%;
+  margin: 36px 0;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.insight-article-content table td {
+  padding: 20px 22px;
+  vertical-align: top;
+  border-bottom: 1px solid rgb(27 16 40 / 12%);
+  color: var(--text-color);
+}
+
+.insight-article-content table td + td {
+  border-left: 1px solid rgb(27 16 40 / 12%);
+}
+
+.insight-article-content table td:first-child {
+  width: 15%;
+  padding-left: 0;
+}
+
+.insight-article-content table td:nth-child(2) {
+  width: 34%;
+}
+
+.insight-article-content table td:first-child strong {
+  font-weight: 700;
+  color: var(--mallesons-navy);
+}
+
+/* header row */
+.insight-article-content table tr:first-child td {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-top: 1px solid var(--mallesons-navy);
+  border-bottom: 1px solid var(--mallesons-navy);
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: 21px;
+  color: var(--mallesons-navy);
+}
+
+/* line breaks inside cells become paragraph gaps */
+.insight-article-content table br {
+  display: block;
+  height: 0;
+  margin-bottom: 12px;
+  content: "";
+}
+
 /* categories */
 .insight-article-categories {
   margin: 56px 0;
