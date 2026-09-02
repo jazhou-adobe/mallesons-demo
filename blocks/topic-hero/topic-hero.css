@@ -1,0 +1,56 @@
+.topic-hero {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--mallesons-lavender);
+  color: var(--mallesons-navy);
+}
+
+/* decorative brand pattern bleeding off the right edge */
+.topic-hero .topic-hero-media {
+  display: none;
+}
+
+.topic-hero .topic-hero-text {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 56px 24px;
+}
+
+.topic-hero .topic-hero-text h1 {
+  max-width: 560px;
+  margin: 0;
+  padding: 40px 0;
+  border-top: 1px solid var(--mallesons-navy);
+  border-bottom: 1px solid var(--mallesons-navy);
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-l);
+  line-height: 1.1;
+  color: var(--mallesons-navy);
+}
+
+@media (width >= 900px) {
+  .topic-hero .topic-hero-text {
+    padding: 80px 24px;
+  }
+
+  .topic-hero .topic-hero-text h1 {
+    font-size: var(--heading-font-size-xl);
+  }
+
+  .topic-hero .topic-hero-media {
+    display: block;
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 34%;
+    line-height: 0;
+  }
+
+  .topic-hero .topic-hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
