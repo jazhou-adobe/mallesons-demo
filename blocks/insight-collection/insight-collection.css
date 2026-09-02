@@ -48,6 +48,17 @@
   text-underline-offset: 4px;
 }
 
+.insight-collection .insight-collection-eyebrow {
+  order: 0;
+  margin: 0;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: var(--body-font-size-xs);
+  line-height: 1.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .insight-collection .insight-collection-date {
   order: 1;
   margin: 0;
@@ -74,4 +85,54 @@
   .insight-collection .insight-collection-grid {
     grid-template-columns: 1fr 1fr 1fr;
   }
+}
+
+/* section intro — a small bold centered label above the grid, matching the
+   equivalent heading treatment on the cards block's curated-grid variants */
+.insight-collection-container h2 {
+  max-width: 900px;
+  margin: 0 auto 32px;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-l);
+  text-align: center;
+}
+
+@media (width >= 900px) {
+  .insight-collection-container h2 {
+    margin-bottom: 48px;
+  }
+}
+
+.insight-collection .insight-collection-hidden {
+  display: none;
+}
+
+.insight-collection-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 32px auto 0;
+  border: none;
+  background: none;
+  color: var(--mallesons-navy);
+  font: inherit;
+  font-weight: 700;
+  font-size: var(--body-font-size-s);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.insight-collection-toggle::after {
+  content: '\2304';
+  font-size: 0.85em;
+  transition: transform 0.2s ease;
+}
+
+.insight-collection-toggle.insight-collection-toggle-expanded::after {
+  transform: rotate(180deg);
+}
+
+.insight-collection-toggle:hover {
+  color: var(--mallesons-accent);
 }
