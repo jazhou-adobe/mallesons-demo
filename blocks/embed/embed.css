@@ -1,0 +1,14 @@
+.embed {
+  margin: 24px 0;
+}
+
+.embed .embed-content,
+.embed .flourish-embed {
+  width: 100%;
+}
+
+.embed .embed-content iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+}
