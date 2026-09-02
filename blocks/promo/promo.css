@@ -146,3 +146,50 @@
     order: 1;
   }
 }
+
+/* stacked variant: image always full width above the text panel, at every
+   breakpoint — used for a plain editorial banner (e.g. a blog callout)
+   rather than the feature/grid zig-zag layouts */
+.promo.stacked .promo-item-image {
+  aspect-ratio: 16 / 6;
+  min-height: 0;
+}
+
+.promo.stacked .promo-item-body {
+  background-color: var(--background-color);
+  color: var(--mallesons-navy);
+}
+
+.promo.stacked .promo-item-body h3 {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+@media (width >= 900px) {
+  .promo.stacked .promo-item {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .promo.stacked .promo-item-image {
+    order: 1;
+    aspect-ratio: 21 / 6;
+    min-height: 0;
+  }
+
+  .promo.stacked .promo-item-body {
+    order: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 24px 0;
+  }
+
+  .promo.stacked .promo-item-body h3 {
+    font-size: var(--heading-font-size-m);
+  }
+
+  .promo.stacked .promo-item-body p {
+    font-size: var(--body-font-size-m);
+    font-weight: 400;
+  }
+}

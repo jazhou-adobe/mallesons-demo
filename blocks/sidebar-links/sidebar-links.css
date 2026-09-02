@@ -1,0 +1,98 @@
+/* the section hosting this block becomes a 2-column rail: main content
+   (default-content-wrapper, in source order) alongside the sidebar */
+.sidebar-links-container {
+  display: grid;
+  gap: 40px;
+}
+
+@media (width >= 900px) {
+  .sidebar-links-container {
+    grid-template-columns: 1fr 320px;
+    align-items: start;
+  }
+}
+
+/* breadcrumb — the section's leading paragraph, styled small and muted */
+.sidebar-links-container .default-content-wrapper > p:first-child {
+  margin: 0 0 24px;
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+.sidebar-links {
+  padding: 32px;
+  border-radius: 4px;
+  background-color: var(--mallesons-cream);
+  color: var(--mallesons-navy);
+  font-family: var(--body-font-family);
+}
+
+.sidebar-links-cta {
+  margin: 0 0 28px;
+}
+
+.sidebar-links-cta .button {
+  width: 100%;
+}
+
+.sidebar-links-heading {
+  margin: 0 0 20px;
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sidebar-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-links-list li {
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(27 16 40 / 12%);
+}
+
+.sidebar-links-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.sidebar-links-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mallesons-navy);
+  font-size: var(--body-font-size-s);
+  line-height: 1.4;
+  text-decoration: none;
+}
+
+.sidebar-links-list a::after {
+  content: '\2192';
+}
+
+.sidebar-links-explore {
+  padding-top: 8px;
+}
+
+.sidebar-links-explore a {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.sidebar-links-explore a::after {
+  content: none;
+}
+
+.sidebar-links-list a:hover {
+  color: var(--mallesons-accent);
+}
+
+.sidebar-links .icon-arrow-circle {
+  width: 22px;
+  height: 22px;
+}

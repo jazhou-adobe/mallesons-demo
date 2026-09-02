@@ -1,0 +1,22 @@
+.cta-band-container .cta-band-wrapper {
+  max-width: unset;
+  padding: 0;
+}
+
+.cta-band {
+  padding: 48px 24px;
+  background-color: var(--mallesons-cream);
+  text-align: center;
+}
+
+.cta-band-heading {
+  margin: 0 0 20px;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-l);
+  color: var(--mallesons-navy);
+}
+
+.cta-band-cta {
+  margin: 0;
+}
