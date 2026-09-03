@@ -10,6 +10,13 @@
     grid-template-columns: 2fr 1fr;
     align-items: start;
   }
+
+  /* the global `.section > div { max-width; margin: auto }` rule shrink-wraps
+     grid items to their content width; fill the tracks instead */
+  .section.sidebar-links-container > div {
+    max-width: none;
+    margin: 0;
+  }
 }
 
 /* breadcrumb — the section's leading paragraph, styled small and muted */
