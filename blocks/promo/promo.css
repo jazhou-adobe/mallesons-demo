@@ -150,6 +150,12 @@
 /* stacked variant: image always full width above the text panel, at every
    breakpoint — used for a plain editorial banner (e.g. a blog callout)
    rather than the feature/grid zig-zag layouts */
+.promo-container:has(.promo.stacked) .promo-wrapper {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 0;
+}
+
 .promo.stacked .promo-item-image {
   aspect-ratio: 16 / 6;
   min-height: 0;
@@ -179,9 +185,9 @@
 
   .promo.stacked .promo-item-body {
     order: 2;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 32px 24px 0;
+    max-width: none;
+    margin: 0;
+    padding: 32px 0 0;
   }
 
   .promo.stacked .promo-item-body h3 {
