@@ -1,21 +1,27 @@
 /* the section hosting this block becomes a 2-column rail: main content
-   (default-content-wrapper, in source order) alongside the sidebar */
-.sidebar-links-container {
+   (default-content-wrapper, in source order) alongside the sidebar. The
+   grid is capped at the site content width and centred (like the source's
+   ~1440 content column) so it never bleeds to the full viewport; the child
+   wrappers keep the global 0 24px gutter, aligning with other sections. */
+main > .section.sidebar-links-container {
   display: grid;
   gap: 40px;
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+/* the global `main > .section > div { max-width; margin:auto }` rule
+   shrink-wraps grid items to their content width; fill the tracks instead
+   (applies at every width so the rail is full-width when stacked on mobile) */
+.section.sidebar-links-container > div {
+  max-width: none;
+  margin: 0;
 }
 
 @media (width >= 900px) {
-  .sidebar-links-container {
+  main > .section.sidebar-links-container {
     grid-template-columns: 2fr 1fr;
     align-items: start;
-  }
-
-  /* the global `.section > div { max-width; margin: auto }` rule shrink-wraps
-     grid items to their content width; fill the tracks instead */
-  .section.sidebar-links-container > div {
-    max-width: none;
-    margin: 0;
   }
 }
 
