@@ -7,8 +7,15 @@
 
 @media (width >= 900px) {
   .sidebar-links-container {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 2fr 1fr;
     align-items: start;
+  }
+
+  /* the global `.section > div { max-width; margin: auto }` rule shrink-wraps
+     grid items to their content width; fill the tracks instead */
+  .section.sidebar-links-container > div {
+    max-width: none;
+    margin: 0;
   }
 }
 
@@ -90,6 +97,15 @@
 
 .sidebar-links-list a:hover {
   color: var(--mallesons-accent);
+}
+
+.sidebar-links-list li.sidebar-links-active a {
+  font-weight: 700;
+  color: var(--mallesons-accent);
+}
+
+.sidebar-links-list li.sidebar-links-active a::after {
+  content: none;
 }
 
 .sidebar-links .icon-arrow-circle {
