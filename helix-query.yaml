@@ -1,0 +1,38 @@
+version: 1
+
+indices:
+  default:
+    include:
+      - '/**'
+    exclude:
+      - '/drafts/**'
+    target: /query-index.json
+    properties:
+      author:
+        select: head > meta[name="author"]
+        value: |
+          attribute(el, 'content')
+      title:
+        select: head > meta[property="og:title"]
+        value: |
+          attribute(el, 'content')
+      navtitle:
+        select: head > meta[name="navtitle"]
+        value: |
+          attribute(el, 'content')
+      description:
+        select: head > meta[name="description"]
+        value: |
+          attribute(el, 'content')
+      image:
+        select: head > meta[property="og:image"]
+        value: |
+          attribute(el, 'content')
+      robots:
+        select: head > meta[name="robots"]
+        value: |
+          attribute(el, 'content')
+      lastModified:
+        select: none
+        value: |
+          parseTimestamp(headers['last-modified'], 'ddd, DD MMM YYYY hh:mm:ss GMT')

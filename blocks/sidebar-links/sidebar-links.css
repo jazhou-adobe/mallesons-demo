@@ -7,7 +7,7 @@
 
 @media (width >= 900px) {
   .sidebar-links-container {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 2fr 1fr;
     align-items: start;
   }
 }
@@ -90,6 +90,15 @@
 
 .sidebar-links-list a:hover {
   color: var(--mallesons-accent);
+}
+
+.sidebar-links-list li.sidebar-links-active a {
+  font-weight: 700;
+  color: var(--mallesons-accent);
+}
+
+.sidebar-links-list li.sidebar-links-active a::after {
+  content: none;
 }
 
 .sidebar-links .icon-arrow-circle {
