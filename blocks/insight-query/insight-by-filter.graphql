@@ -1,0 +1,62 @@
+# Persisted GraphQL query: aem-demo-assets/insight-by-filter
+#
+# Powers the `insight-query` block. Filters the Insight content-fragment model by
+# author (last name), category, and/or article type, with a configurable result
+# limit and sort order. Each term is OPTIONAL and they COMBINE (AND): the block
+# passes only the criteria the author entered; anything omitted defaults to the
+# empty string, and `CONTAINS ""` matches everything, so that field is not
+# constrained. With nothing supplied the query returns the latest insights
+# (bounded by `limit`).
+#
+# WHY SCALARS (not a $filter input object): the block runs in the browser and the
+# AEM GraphQL endpoint's CORS policy allows GET only (access-control-allow-methods:
+# GET) — a cross-origin POST is preflight-blocked. Persisted queries can only carry
+# SCALAR variables over a GET URL (an input object sent as a URL param is received
+# as a String and rejected: "Expected type 'Map' but was 'String'"). So the filter
+# is assembled inside the query from scalar params, exactly like the existing
+# insights-by-category / insights-by-author queries.
+#
+# Matching is case-insensitive substring (CONTAINS + _ignoreCase), verified against
+# the aem-demo-assets schema for scalar, string-array (category) and nested-array
+# (authors) fields.
+#
+# Deploy (AEM author), then publish:
+#   PUT https://author-p116706-e1142141.adobeaemcloud.com/graphql/persist.json/aem-demo-assets/insight-by-filter
+#   PUT https://author-p116706-e1142141.adobeaemcloud.com/graphql/publish/aem-demo-assets/insight-by-filter
+#
+# Invocation (GET, cacheable) — only the authored params are sent:
+#   /graphql/execute.json/aem-demo-assets/insight-by-filter;category=Competition;author=Zhou;limit=6;sort=articledate%20DESC?ck=<ts>
+
+query GetInsights(
+  $author: String = ""
+  $category: String = ""
+  $articleType: String = ""
+  $limit: Int = 6
+  $sort: String = "articledate DESC"
+) {
+  insightList(
+    filter: {
+      _logOp: AND
+      category: { _expressions: [{ value: $category, _operator: CONTAINS, _ignoreCase: true }] }
+      articleType: { _expressions: [{ value: $articleType, _operator: CONTAINS, _ignoreCase: true }] }
+      authors: { _match: { lastName: { _expressions: [{ value: $author, _operator: CONTAINS, _ignoreCase: true }] } } }
+    }
+    limit: $limit
+    sort: $sort
+  ) {
+    items {
+      _path
+      title
+      articleType
+      articledate
+      introText {
+        html
+      }
+      category
+      authors {
+        firstName
+        lastName
+      }
+    }
+  }
+}
