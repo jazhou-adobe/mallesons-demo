@@ -18,32 +18,65 @@
  *   | limit         | 6                   |  (max results, default 6)
  *   | sort          | newest              |  (newest | oldest, default newest)
  *
- * Criteria combine with AND. Any omitted term is left unconstrained (the persisted
- * query defaults it to "" and matches everything). With no author/category/type
- * the block lists the latest insights (bounded by `limit`). Matching is
- * case-insensitive substring.
+ * Criteria combine with AND; matching is case-insensitive substring. With no
+ * author/category/type the block lists the latest insights (bounded by `limit`).
  *
- * Invoked over GET (the endpoint's CORS policy allows GET only). The persisted
- * query — scalar variables, filter assembled server-side — lives in
- * insight-by-filter.graphql.
+ * The block fetches the insights feed from the persisted GraphQL query
+ * (aem-demo-assets/insight-by-filter, see insight-by-filter.graphql) and applies
+ * the criteria, sort and limit client-side. Server-side filter params are NOT
+ * used: AEM's persisted-query GET transport does not URL-decode space-containing
+ * values (e.g. "Featured Insight"), query-string params are ignored, and a
+ * cross-origin POST with an object filter is CORS-blocked (endpoint allows GET
+ * only). Fetching the feed once (cacheable) and filtering in JS keeps every
+ * criterion — including multi-word values — reliable.
  */
 
 const GRAPHQL_ENDPOINT = 'https://publish-p116706-e1142141.adobeaemcloud.com/graphql/execute.json/aem-demo-assets/insight-by-filter';
 
+// Upper bound on the feed we pull before filtering. The persisted query is
+// invoked with no filter params (a cacheable feed) and criteria are applied
+// client-side — AEM's persisted-query GET transport (matrix params) does not
+// URL-decode space-containing values (e.g. "Featured Insight"), and a
+// cross-origin POST with an object filter is CORS-blocked (GET only). Filtering
+// in JS keeps every criterion, including multi-word values, reliable.
+const FEED_LIMIT = 200;
+
 /**
- * Builds the persisted-query URL: the authored scalar criteria become `;name=value`
- * params (omitted terms fall back to the query's defaults), cache-busted with `ck`.
- * @param {object} cfg
+ * Builds the feed URL (all insights, newest-first), cache-busted with `ck`.
  * @returns {string}
  */
-function endpointFor(cfg) {
-  const params = [];
-  if (cfg.author) params.push(`author=${encodeURIComponent(cfg.author)}`);
-  if (cfg.category) params.push(`category=${encodeURIComponent(cfg.category)}`);
-  if (cfg.articleType) params.push(`articleType=${encodeURIComponent(cfg.articleType)}`);
-  params.push(`limit=${cfg.limit}`);
-  params.push(`sort=${encodeURIComponent(cfg.sort)}`);
-  return `${GRAPHQL_ENDPOINT};${params.join(';')}?ck=${Date.now()}`;
+function feedUrl() {
+  return `${GRAPHQL_ENDPOINT};limit=${FEED_LIMIT};sort=articledate?ck=${Date.now()}`;
+}
+
+/**
+ * Case-insensitive test of whether an insight matches the authored criteria.
+ * @param {object} item
+ * @param {object} cfg
+ * @returns {boolean}
+ */
+function matches(item, cfg) {
+  const inList = (list, needle) => (list || [])
+    .some((v) => String(v || '').toLowerCase().includes(needle.toLowerCase()));
+  if (cfg.author && !inList((item.authors || []).map((a) => a.lastName), cfg.author)) return false;
+  if (cfg.category && !inList(item.category, cfg.category)) return false;
+  if (cfg.articleType
+    && !String(item.articleType || '').toLowerCase().includes(cfg.articleType.toLowerCase())) return false;
+  return true;
+}
+
+/**
+ * Filters, sorts and limits the feed per the authored config.
+ * @param {Array<object>} feed
+ * @param {object} cfg
+ * @returns {Array<object>}
+ */
+function selectItems(feed, cfg) {
+  const dir = cfg.sort === 'oldest' ? 1 : -1;
+  return feed
+    .filter((item) => matches(item, cfg))
+    .sort((a, b) => dir * (new Date(a.articledate || 0) - new Date(b.articledate || 0)))
+    .slice(0, cfg.limit);
 }
 
 /**
@@ -179,7 +212,7 @@ function readConfig(block) {
     category: '',
     articleType: '',
     limit: 6,
-    sort: 'articledate DESC',
+    sort: 'newest',
   };
   [...block.children].forEach((row) => {
     const cells = [...row.children];
@@ -194,7 +227,7 @@ function readConfig(block) {
       case 'category': case 'categories': cfg.category = value; break;
       case 'type': case 'articletype': cfg.articleType = value; break;
       case 'limit': { const n = parseInt(value, 10); if (n > 0) cfg.limit = n; break; }
-      case 'sort': cfg.sort = /^old/i.test(value) ? 'articledate ASC' : 'articledate DESC'; break;
+      case 'sort': cfg.sort = /^old/i.test(value) ? 'oldest' : 'newest'; break;
       default: break;
     }
   });
@@ -237,12 +270,12 @@ export default async function decorate(block) {
   block.textContent = '';
   block.classList.add('insight-query-loading');
 
-  let items;
+  let feed;
   try {
-    const resp = await fetch(endpointFor(cfg), { cache: 'no-store' });
+    const resp = await fetch(feedUrl(), { cache: 'no-store' });
     if (!resp.ok) throw new Error(`request failed with status ${resp.status}`);
     const payload = await resp.json();
-    items = payload && payload.data && payload.data.insightList && payload.data.insightList.items;
+    feed = payload && payload.data && payload.data.insightList && payload.data.insightList.items;
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('insight-query: unable to load insights', error);
@@ -250,9 +283,9 @@ export default async function decorate(block) {
   block.classList.remove('insight-query-loading');
 
   renderHeader(block, cfg);
-  if (!items) {
+  if (!feed) {
     block.append(el('p', 'insight-query-error', 'Insights are currently unavailable.'));
     return;
   }
-  renderGrid(block, items);
+  renderGrid(block, selectItems(feed, cfg));
 }

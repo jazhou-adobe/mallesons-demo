@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Insight Query Builder</title>
+    <style>
+      :root {
+        --navy: #1b1028;
+        --accent: #6f60d4;
+        --border: #d6d3de;
+        --muted: #6b6478;
+        --bg: #fff;
+        --field-bg: #fbfaf8;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        color: var(--navy);
+        background: var(--bg);
+        font-size: 14px;
+      }
+      .wrap { display: flex; flex-direction: column; height: 100vh; }
+      header { padding: 16px 20px 8px; }
+      header h1 { margin: 0 0 2px; font-size: 16px; }
+      header p { margin: 0; color: var(--muted); font-size: 12px; }
+      .body { flex: 1; overflow: auto; padding: 8px 20px; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      .field.full { grid-column: 1 / -1; }
+      label { font-size: 12px; font-weight: 600; color: var(--navy); }
+      .hint { font-size: 11px; color: var(--muted); font-weight: 400; }
+      input, select {
+        font: inherit; font-size: 13px; padding: 8px 10px;
+        border: 1px solid var(--border); border-radius: 6px;
+        background: var(--field-bg); color: var(--navy); width: 100%;
+      }
+      input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+      .status {
+        grid-column: 1 / -1; display: flex; align-items: center; gap: 8px;
+        margin-top: 2px; padding: 10px 12px; border-radius: 6px;
+        background: #f6f4ee; font-size: 13px;
+      }
+      .status b { color: var(--accent); }
+      .status.err { background: #fdecec; color: #a3272b; }
+      .preview { grid-column: 1 / -1; }
+      .preview summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+      pre {
+        margin: 8px 0 0; padding: 12px; border-radius: 6px;
+        background: var(--navy); color: #eae7f5; font-size: 12px;
+        overflow: auto; white-space: pre-wrap; word-break: break-word;
+      }
+      footer {
+        display: flex; justify-content: flex-end; gap: 10px;
+        padding: 12px 20px; border-top: 1px solid var(--border);
+      }
+      button {
+        font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+        padding: 9px 18px; border-radius: 6px; border: 1px solid var(--border);
+        background: #fff; color: var(--navy);
+      }
+      button.primary { background: var(--navy); border-color: var(--navy); color: #fff; }
+      button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+      button:not(.primary):hover { border-color: var(--accent); color: var(--accent); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Insight Query</h1>
+        <p>Pick the criteria — the block pulls matching insights live from GraphQL.</p>
+      </header>
+
+      <div class="body">
+        <div class="grid">
+          <div class="field">
+            <label for="heading">Heading <span class="hint">(optional)</span></label>
+            <input id="heading" type="text" placeholder="e.g. Latest Thinking" />
+          </div>
+          <div class="field">
+            <label for="eyebrow">Eyebrow <span class="hint">(optional)</span></label>
+            <input id="eyebrow" type="text" placeholder="e.g. Insights" />
+          </div>
+
+          <div class="field">
+            <label for="author">Author</label>
+            <select id="author"><option value="">Any author</option></select>
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category"><option value="">Any category</option></select>
+          </div>
+          <div class="field">
+            <label for="type">Type</label>
+            <select id="type"><option value="">Any type</option></select>
+          </div>
+          <div class="field">
+            <label for="sort">Sort</label>
+            <select id="sort">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="limit">Max results</label>
+            <input id="limit" type="number" min="1" max="100" value="6" />
+          </div>
+
+          <div class="status" id="status">Loading options…</div>
+
+          <details class="preview">
+            <summary>Block preview</summary>
+            <pre id="preview"></pre>
+          </details>
+        </div>
+      </div>
+
+      <footer>
+        <button id="cancel" type="button">Cancel</button>
+        <button id="insert" type="button" class="primary">Insert block</button>
+      </footer>
+    </div>
+
+    <script type="module">
+      import DA_SDK from 'https://da.live/nx/utils/sdk.js';
+
+      const GRAPHQL_ENDPOINT = 'https://publish-p116706-e1142141.adobeaemcloud.com/graphql/execute.json/aem-demo-assets/insight-by-filter';
+      const BLOCK_NAME = 'insight-query';
+
+      const $ = (id) => document.getElementById(id);
+      const els = {
+        heading: $('heading'), eyebrow: $('eyebrow'), author: $('author'),
+        category: $('category'), type: $('type'), sort: $('sort'), limit: $('limit'),
+        status: $('status'), preview: $('preview'), insert: $('insert'), cancel: $('cancel'),
+      };
+
+      const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+      /** Read the form into a normalised config. */
+      function readForm() {
+        const limit = parseInt(els.limit.value, 10);
+        return {
+          heading: els.heading.value.trim(),
+          eyebrow: els.eyebrow.value.trim(),
+          author: els.author.value,
+          category: els.category.value,
+          type: els.type.value,
+          sort: els.sort.value === 'oldest' ? 'oldest' : 'newest',
+          limit: Number.isFinite(limit) && limit > 0 ? limit : 6,
+        };
+      }
+
+      let allItems = [];
+
+      /** Client-side match — mirrors the block's selection (case-insensitive substring). */
+      function matches(item, cfg) {
+        const has = (v) => (v || '').toLowerCase();
+        if (cfg.author && !(item.authors || []).some((a) => has(a.lastName).includes(cfg.author.toLowerCase()))) return false;
+        if (cfg.category && !(item.category || []).some((c) => has(c).includes(cfg.category.toLowerCase()))) return false;
+        if (cfg.type && !has(item.articleType).includes(cfg.type.toLowerCase())) return false;
+        return true;
+      }
+
+      /** Build the DA block table — a row per authored, non-default field. */
+      function blockTable(cfg) {
+        const rows = [`<tr><td>${BLOCK_NAME}</td></tr>`];
+        const add = (k, v) => rows.push(`<tr><td>${k}</td><td>${esc(v)}</td></tr>`);
+        if (cfg.heading) add('heading', cfg.heading);
+        if (cfg.eyebrow) add('eyebrow', cfg.eyebrow);
+        if (cfg.author) add('author', cfg.author);
+        if (cfg.category) add('category', cfg.category);
+        if (cfg.type) add('type', cfg.type);
+        if (cfg.limit !== 6) add('limit', cfg.limit);
+        if (cfg.sort === 'oldest') add('sort', 'oldest');
+        return `<table>${rows.join('')}</table>`;
+      }
+
+      async function fetchItems(url) {
+        const resp = await fetch(url, { cache: 'no-store' });
+        if (!resp.ok) throw new Error(`status ${resp.status}`);
+        const payload = await resp.json();
+        return (payload && payload.data && payload.data.insightList && payload.data.insightList.items) || [];
+      }
+
+      /** Populate the author/category/type selects from the full insight set. */
+      async function loadFacets() {
+        allItems = await fetchItems(`${GRAPHQL_ENDPOINT};limit=200;sort=articledate?ck=${Date.now()}`);
+        const items = allItems;
+        const authors = new Set();
+        const categories = new Set();
+        const types = new Set();
+        items.forEach((it) => {
+          (it.authors || []).forEach((a) => { if (a.lastName) authors.add(a.lastName); });
+          (it.category || []).forEach((c) => { if (c) categories.add(c); });
+          if (it.articleType) types.add(it.articleType);
+        });
+        const fill = (sel, values) => {
+          [...values].sort((a, b) => a.localeCompare(b)).forEach((v) => {
+            const opt = document.createElement('option');
+            opt.value = v; opt.textContent = v; sel.append(opt);
+          });
+        };
+        fill(els.author, authors);
+        fill(els.category, categories);
+        fill(els.type, types);
+      }
+
+      /**
+       * Update the live match count + block preview. The count is computed from
+       * the fetched feed client-side — mirroring the block, which filters in JS
+       * because the persisted-query GET transport cannot carry multi-word values.
+       */
+      function refresh() {
+        const cfg = readForm();
+        els.preview.textContent = blockTable(cfg).replace(/<\/tr>/g, '</tr>\n');
+        const n = allItems.filter((it) => matches(it, cfg)).length;
+        const shown = Math.min(n, cfg.limit);
+        els.status.className = 'status';
+        els.status.innerHTML = `<b>${n}</b>&nbsp;matching insight${n === 1 ? '' : 's'} · showing <b>${shown}</b>`;
+      }
+
+      document.querySelectorAll('input, select').forEach((n) => {
+        n.addEventListener('input', refresh);
+        n.addEventListener('change', refresh);
+      });
+
+      // Resolve the DA SDK in the background; the form is usable immediately and
+      // only the Insert action needs the host token + actions.
+      let sdk = null;
+      DA_SDK.then((s) => { sdk = s; }).catch(() => { sdk = null; });
+
+      els.cancel.addEventListener('click', () => { if (sdk) sdk.actions.closeLibrary(); });
+      els.insert.addEventListener('click', () => {
+        const cfg = readForm();
+        if (!sdk) {
+          els.status.className = 'status err';
+          els.status.textContent = 'Open this from the Library panel inside the DA editor to insert.';
+          return;
+        }
+        sdk.actions.sendHTML(blockTable(cfg));
+        sdk.actions.closeLibrary();
+      });
+
+      (async () => {
+        try {
+          await loadFacets();
+          refresh();
+        } catch (e) {
+          els.status.className = 'status err';
+          els.status.textContent = 'Could not load options from the insights service.';
+        }
+      })();
+    </script>
+  </body>
+</html>

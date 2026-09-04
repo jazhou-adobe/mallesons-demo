@@ -24,8 +24,16 @@
 #   PUT https://author-p116706-e1142141.adobeaemcloud.com/graphql/persist.json/aem-demo-assets/insight-by-filter
 #   PUT https://author-p116706-e1142141.adobeaemcloud.com/graphql/publish/aem-demo-assets/insight-by-filter
 #
-# Invocation (GET, cacheable) — only the authored params are sent:
-#   /graphql/execute.json/aem-demo-assets/insight-by-filter;category=Competition;author=Zhou;limit=6;sort=articledate%20DESC?ck=<ts>
+# Invocation (GET). Single-token param values filter server-side, e.g.:
+#   /graphql/execute.json/aem-demo-assets/insight-by-filter;category=Telecommunications;author=Zhou;limit=6?ck=<ts>
+#
+# NOTE — the insight-query block calls this query WITHOUT filter params (just a
+# bounded feed) and filters/sorts/limits client-side. AEM's persisted-query GET
+# transport reads only matrix (;) params and does NOT URL-decode them, so
+# space-containing values (e.g. articleType "Featured Insight", or a "field DIR"
+# sort) never match; query-string (?) params are ignored; and a cross-origin
+# POST with an object filter is CORS-blocked (endpoint allows GET only). The
+# scalar params above still work for single-token values when invoked directly.
 
 query GetInsights(
   $author: String = ""
