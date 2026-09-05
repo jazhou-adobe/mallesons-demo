@@ -1,5 +1,5 @@
 /*
- * Author Inquiry Block
+ * Author Inquiry Block — queries the author CF model by practice.
  *
  * A query-driven people grid: the author chooses a practice and this block asks
  * a single persisted GraphQL query (aem-demo-assets/authors-all) for the author
