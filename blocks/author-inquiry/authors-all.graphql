@@ -16,8 +16,10 @@
 # Invocation (GET, cacheable):
 #   /graphql/execute.json/aem-demo-assets/authors-all;limit=100?ck=<ts>
 #
-# The author CF model has no literal "practices" field; its multi-value role
-# attribute is `occupations`, which the block treats as the practice list.
+# The block filters on the Author CF model's `practices` field. Requires the
+# Author model + fragments (with practices values) to be published so
+# `practices` is present on the publish GraphQL schema. `occupations` is kept
+# as a fallback for fragments that have no practices set.
 
 query GetAuthors($limit: Int = 100) {
   authorList(limit: $limit) {
@@ -25,6 +27,7 @@ query GetAuthors($limit: Int = 100) {
       _path
       firstName
       lastName
+      practices
       occupations
       _tags
       birthDay

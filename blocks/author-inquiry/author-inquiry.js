@@ -11,13 +11,13 @@
  *   | author-inquiry |                                   |
  *   | heading        | Our Experts in Competition        |  (optional)
  *   | eyebrow        | The Team                          |  (optional)
- *   | practice       | Photographer                      |  (optional → all)
+ *   | practice       | oil-and-gas                       |  (optional → all)
  *   | limit          | 8                                 |  (max results, default 8)
  *   | sort           | name                              |  (name | practice, default name)
  *
- * The demo author CF model has no literal "practices" field; its multi-value
- * role attribute is `occupations`, so a practice filters authors whose
- * occupations contain the value (case-insensitive substring).
+ * The block filters on the Author CF model's `practices` field (the authored
+ * `practice` value is matched case-insensitively as a substring). Fragments
+ * with no practices set fall back to the legacy `occupations` field.
  *
  * The block fetches the full author feed from the persisted query (GET,
  * cacheable) and filters/sorts/limits client-side. Server-side matrix params
@@ -84,7 +84,12 @@ function el(tag, className, ...children) {
  * @returns {string}
  */
 function excerpt(bio, max = 180) {
-  const text = (bio && bio.plaintext ? bio.plaintext : '').replace(/\s+/g, ' ').trim();
+  const raw = (bio && (bio.plaintext || bio.html)) || '';
+  const text = raw
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&(?:amp|lt|gt|nbsp|#\d+);/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (text.length <= max) return text;
   return `${text.slice(0, max).replace(/\s+\S*$/, '')}…`;
 }
@@ -126,6 +131,17 @@ function readConfig(block) {
 }
 
 /**
+ * The author's practices — the authored filter field. Falls back to the
+ * legacy `occupations` field for any fragment that has no practices set.
+ * @param {object} item
+ * @returns {string[]}
+ */
+function practiceList(item) {
+  const list = (item.practices && item.practices.length) ? item.practices : item.occupations;
+  return (list || []).filter(Boolean);
+}
+
+/**
  * Case-insensitive test of whether an author practises the authored practice.
  * @param {object} item
  * @param {object} cfg
@@ -134,8 +150,7 @@ function readConfig(block) {
 function matches(item, cfg) {
   if (!cfg.practice) return true;
   const needle = cfg.practice.toLowerCase();
-  return (item.occupations || [])
-    .some((v) => String(v || '').toLowerCase().includes(needle));
+  return practiceList(item).some((v) => String(v || '').toLowerCase().includes(needle));
 }
 
 /**
@@ -148,8 +163,8 @@ function selectItems(feed, cfg) {
   const rows = feed.filter((item) => matches(item, cfg));
   rows.sort((a, b) => {
     if (cfg.sort === 'practice') {
-      const pa = (a.occupations || [])[0] || '';
-      const pb = (b.occupations || [])[0] || '';
+      const pa = practiceList(a)[0] || '';
+      const pb = practiceList(b)[0] || '';
       if (pa !== pb) return pa.localeCompare(pb);
     }
     return String(a.lastName || '').localeCompare(String(b.lastName || ''));
@@ -179,7 +194,7 @@ function buildCard(item) {
   const body = el('div', 'author-inquiry-body');
   body.append(el('h3', 'author-inquiry-name', fullName(item)));
 
-  const practices = (item.occupations || []).filter(Boolean);
+  const practices = practiceList(item);
   if (practices.length) {
     body.append(el('p', 'author-inquiry-practices', practices.join(' · ')));
   }
