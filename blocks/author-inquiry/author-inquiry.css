@@ -1,0 +1,143 @@
+.author-inquiry {
+  color: var(--mallesons-navy);
+  font-family: var(--body-font-family);
+}
+
+.author-inquiry-loading {
+  min-height: 40vh;
+}
+
+/* header */
+.author-inquiry-header {
+  margin: 0 0 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgb(27 16 40 / 12%);
+}
+
+.author-inquiry-eyebrow {
+  margin: 0 0 12px;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mallesons-accent);
+}
+
+.author-inquiry-heading {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-xl);
+  line-height: 1.15;
+  color: var(--mallesons-navy);
+}
+
+.author-inquiry-empty,
+.author-inquiry-error {
+  margin: 40px 0;
+  font-size: var(--body-font-size-s);
+  color: var(--dark-color);
+}
+
+/* grid */
+.author-inquiry-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+/* card */
+.author-inquiry-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(27 16 40 / 12%);
+  border-radius: 10px;
+  background-color: var(--background-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.author-inquiry-card:hover,
+.author-inquiry-card:focus-within {
+  border-color: var(--mallesons-accent);
+  box-shadow: 0 12px 28px rgb(27 16 40 / 10%);
+  transform: translateY(-2px);
+}
+
+.author-inquiry-photo {
+  overflow: hidden;
+  background-color: var(--mallesons-cream);
+  aspect-ratio: 4 / 5;
+}
+
+.author-inquiry-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.author-inquiry-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px;
+}
+
+.author-inquiry-name {
+  margin: 0;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-m);
+  line-height: 1.2;
+  color: var(--mallesons-navy);
+}
+
+.author-inquiry-practices {
+  margin: 0;
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mallesons-accent);
+  overflow-wrap: anywhere;
+}
+
+.author-inquiry-bio {
+  margin: 0;
+  font-size: var(--body-font-size-s);
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+.author-inquiry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.author-inquiry-tag {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background-color: var(--mallesons-cream);
+  font-size: var(--body-font-size-xs);
+  letter-spacing: 0.02em;
+  color: var(--mallesons-navy);
+}
+
+@media (width >= 600px) {
+  .author-inquiry-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (width >= 900px) {
+  .author-inquiry-heading {
+    font-size: var(--heading-font-size-xxl);
+  }
+
+  .author-inquiry-grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}

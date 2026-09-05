@@ -1,0 +1,46 @@
+# Persisted GraphQL query: aem-demo-assets/authors-all
+#
+# Returns every author Content Fragment with all attributes. The author-inquiry
+# block fetches this feed (GET, cacheable) and filters by practice, sorts and
+# limits client-side — AEM's persisted-query GET transport does not URL-decode
+# space-containing matrix params and a cross-origin POST is CORS-blocked (the
+# endpoint allows GET only), so fetch-once-then-filter keeps every criterion
+# reliable.
+#
+# Deploy (persist on author, then replicate to publish):
+#   PUT  https://author-p116706-e1142141.adobeaemcloud.com/graphql/persist.json/aem-demo-assets/authors-all
+#        (Content-Type: application/json, body = this query)
+#   POST https://author-p116706-e1142141.adobeaemcloud.com/bin/replicate.json
+#        path=/conf/aem-demo-assets/settings/graphql/persistentQueries/authors-all  cmd=Activate
+#
+# Invocation (GET, cacheable):
+#   /graphql/execute.json/aem-demo-assets/authors-all;limit=100?ck=<ts>
+#
+# The author CF model has no literal "practices" field; its multi-value role
+# attribute is `occupations`, which the block treats as the practice list.
+
+query GetAuthors($limit: Int = 100) {
+  authorList(limit: $limit) {
+    items {
+      _path
+      firstName
+      lastName
+      occupations
+      _tags
+      birthDay
+      biography {
+        html
+        plaintext
+      }
+      profilePicture {
+        ... on ImageRef {
+          _publishUrl
+          _dynamicUrl
+          width
+          height
+          mimeType
+        }
+      }
+    }
+  }
+}
