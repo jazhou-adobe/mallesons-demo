@@ -32,6 +32,26 @@ const GRAPHQL_ENDPOINT = 'https://publish-p116706-e1142141.adobeaemcloud.com/gra
 // Upper bound on the feed pulled before client-side filtering.
 const FEED_LIMIT = 100;
 
+// Origin serving the persisted query and the Dynamic Media asset renditions.
+const PUBLISH_ORIGIN = new URL(GRAPHQL_ENDPOINT).origin;
+
+/**
+ * Builds an optimized profile-image URL from a profilePicture reference.
+ * Prefers the Dynamic Media delivery path (resizable, webp) over the full-res
+ * DAM original so a ~280px card never downloads a multi-megapixel asset.
+ * @param {object} pic the profilePicture ImageRef
+ * @param {number} width requested rendition width in px
+ * @returns {string|null}
+ */
+function imageUrl(pic, width) {
+  if (!pic) return null;
+  // eslint-disable-next-line no-underscore-dangle
+  const dynamic = pic._dynamicUrl;
+  if (dynamic) return `${PUBLISH_ORIGIN}${dynamic}?width=${width}&preferwebp=true`;
+  // eslint-disable-next-line no-underscore-dangle
+  return pic._publishUrl || null;
+}
+
 /**
  * Builds the feed URL (all authors), cache-busted with `ck`.
  * @returns {string}
@@ -145,16 +165,14 @@ function selectItems(feed, cfg) {
 function buildCard(item) {
   const card = el('article', 'author-inquiry-card');
 
-  const pic = item.profilePicture;
-  // eslint-disable-next-line no-underscore-dangle
-  const photoUrl = pic && pic._publishUrl;
+  const photoUrl = imageUrl(item.profilePicture, 600);
   if (photoUrl) {
     const img = el('img');
     img.src = photoUrl;
+    img.srcset = `${imageUrl(item.profilePicture, 400)} 400w, ${photoUrl} 600w`;
+    img.sizes = '(width >= 900px) 22vw, (width >= 600px) 45vw, 90vw';
     img.alt = fullName(item);
     img.loading = 'lazy';
-    if (pic.width) img.width = pic.width;
-    if (pic.height) img.height = pic.height;
     card.append(el('div', 'author-inquiry-photo', img));
   }
 
