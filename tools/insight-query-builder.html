@@ -164,7 +164,7 @@
 
       /** Build the DA block table — a row per authored, non-default field. */
       function blockTable(cfg) {
-        const rows = [`<tr><td>${BLOCK_NAME}</td></tr>`];
+        const rows = [`<tr><td colspan="2">${BLOCK_NAME}</td></tr>`];
         const add = (k, v) => rows.push(`<tr><td>${k}</td><td>${esc(v)}</td></tr>`);
         if (cfg.heading) add('heading', cfg.heading);
         if (cfg.eyebrow) add('eyebrow', cfg.eyebrow);
