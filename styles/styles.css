@@ -320,3 +320,8 @@ main .section.highlight {
   margin: 0;
   padding: 40px 0;
 }
+
+/* the metadata block is lifted into <head>; never render it in the page */
+main .metadata {
+  display: none;
+}

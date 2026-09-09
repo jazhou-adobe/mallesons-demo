@@ -1,0 +1,75 @@
+.article-body {
+  max-width: 820px;
+  margin: 40px auto;
+  color: var(--text-color);
+  font-size: var(--body-font-size-m);
+  line-height: 1.6;
+}
+
+.article-body > :first-child {
+  margin-top: 0;
+}
+
+/* headings — serif, lighter weight, brand navy, matching the source */
+.article-body h2 {
+  margin: 1.5em 0 0.4em;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-l);
+  line-height: 1.2;
+  color: var(--mallesons-navy);
+}
+
+.article-body h3 {
+  margin: 1.3em 0 0.3em;
+  font-family: var(--heading-font-family);
+  font-weight: 400;
+  font-size: var(--heading-font-size-m);
+  line-height: 1.25;
+  color: var(--mallesons-navy);
+}
+
+.article-body p {
+  margin: 0 0 1em;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 1em;
+  padding-left: 1.4em;
+}
+
+.article-body li {
+  margin: 0 0 0.5em;
+}
+
+.article-body strong {
+  font-weight: 600;
+}
+
+/* body links — brand accent, underlined, matching the source */
+.article-body a:any-link {
+  color: var(--mallesons-accent);
+  text-decoration: underline;
+}
+
+.article-body a:hover {
+  color: var(--link-color);
+}
+
+/* breadcrumb — only the first prose run leads with a paragraph */
+.article-body > p:first-child {
+  margin: 0 0 32px;
+  font-size: var(--body-font-size-xs);
+  color: var(--dark-color);
+}
+
+.article-body > p:first-child a:any-link {
+  color: var(--dark-color);
+  text-decoration: none;
+}
+
+.article-body > p:first-child a:hover {
+  color: var(--mallesons-accent);
+  text-decoration: underline;
+}
