@@ -4,6 +4,10 @@
 html {
   scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+
+  /* the site header is static (in flow); keep it in view when the first
+   * panel snaps by insetting the snapport by the nav height */
+  scroll-padding-top: var(--nav-height);
 }
 
 /* full-bleed: let the hero span the viewport like the source masthead */
@@ -28,8 +32,8 @@ main > .section.article-hero-container > div {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: calc(100vh - var(--nav-height));
+  min-height: calc(100dvh - var(--nav-height));
   padding: 64px 24px;
   overflow: hidden;
   scroll-snap-align: start;
@@ -101,6 +105,9 @@ main > .section.article-hero-container > div {
   padding: 64px 24px;
   text-align: center;
   scroll-snap-align: start;
+
+  /* cancel the header inset so the lead panel snaps to a full screen */
+  scroll-margin-top: calc(-1 * var(--nav-height));
 }
 
 .article-hero-lead-text {
